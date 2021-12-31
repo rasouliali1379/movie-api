@@ -6,8 +6,9 @@ import (
 )
 
 func (r *rest) routing() {
-	r.fiber.Post("/login", controllers.Login)
-	r.fiber.Post("/signup", controllers.SignUp)
+	r.fiber.Post("account/login", controllers.Login)
+	r.fiber.Post("account/signup", controllers.SignUp)
+	r.fiber.Post("account/refresh", controllers.Refresh)
 	r.fiber.Use(func(c *fiber.Ctx) error {
 		return c.Status(404).JSON(map[string]string{
 			"message": "Path not found",

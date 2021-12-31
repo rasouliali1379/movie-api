@@ -8,7 +8,6 @@ import (
 
 func (userDb *userDb) CreateUser(user models.User) (interface{}, error) {
 	result, err := userDb.db.InsertOne(context.TODO(), user)
-
 	if err != nil {
 		return nil, err
 	}

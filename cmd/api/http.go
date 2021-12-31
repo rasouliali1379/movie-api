@@ -10,8 +10,8 @@ func StartApi(port string) error {
 	app := fiber.New()
 
 	if port == "" {
-		cfg := new(config.Config)
-		err := config.ReadYAML("config.yaml", cfg)
+		cfg, err := config.GetConfig()
+
 		if err != nil {
 			log.Printf("error reading config.yaml file: %s\n", err)
 			port = getDefaultPort()

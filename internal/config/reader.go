@@ -7,11 +7,21 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-func ReadEnv(cfg *Config) error {
+func GetConfig() (*Config, error) {
+	cfg := new(Config)
+	err := readYAML("config.yaml", cfg)
+	if err != nil {
+		return &Config{}, err
+	}
+
+	return cfg, nil
+}
+
+func readEnv(cfg *Config) error {
 	return envconfig.Process("", cfg)
 }
 
-func ReadYAML(path string, cfg *Config) (err error) {
+func readYAML(path string, cfg *Config) (err error) {
 	file, err := os.Open(path)
 	if err != nil {
 		return err

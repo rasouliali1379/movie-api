@@ -6,28 +6,8 @@ import (
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
 	en2 "github.com/go-playground/validator/v10/translations/en"
-	"golang.org/x/crypto/bcrypt"
-	"log"
+	"github.com/gofiber/fiber/v2"
 )
-
-func HashAndSalt(pwd []byte) string {
-	hash, err := bcrypt.GenerateFromPassword(pwd, bcrypt.MinCost)
-	if err != nil {
-		log.Println(err)
-	}
-	return string(hash)
-}
-
-func ComparePasswords(hashedPwd string, plainPwd string) bool {
-	byteHash := []byte(hashedPwd)
-	err := bcrypt.CompareHashAndPassword(byteHash, []byte(plainPwd))
-	if err != nil {
-		log.Println(err)
-		return false
-	}
-
-	return true
-}
 
 func TranslateError(err error, validate *validator.Validate) map[string]string {
 	english := en.New()
@@ -46,4 +26,30 @@ func TranslateError(err error, validate *validator.Validate) map[string]string {
 		errs[e.Field()] = translatedErr.Error()
 	}
 	return errs
+}
+
+func Validate(model interface{}, c *fiber.Ctx) (bool, error) {
+
+	if err := c.BodyParser(model); err != nil {
+		return false, c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": err.Error(),
+		})
+
+	}
+
+	validation := validator.New()
+
+	err := validation.Struct(model)
+	if err != nil {
+		if _, ok := err.(*validator.InvalidValidationError); ok {
+			fmt.Println(err)
+		}
+		errs := TranslateError(err, validation)
+		return false, c.Status(400).JSON(fiber.Map{
+			"message": "Invalid request body",
+			"fields":  errs,
+		})
+	}
+
+	return true, nil
 }

@@ -1,2 +1,4 @@
+#This data is important and this file should be included to .gitignore in a real project
+
 jwt:
   secret: EWS8IhQPH2OosdNfWMq2XqGlvGgOfZMl

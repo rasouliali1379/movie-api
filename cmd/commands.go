@@ -38,17 +38,6 @@ var cmdList = []*cobra.Command{
 		},
 	},
 	{
-		Use:   "login",
-		Short: "Login to Panel",
-		Long:  `Proceeding login you will receive a access token to manage things inside server`,
-		Run: func(cmd *cobra.Command, args []string) {
-			err := user.Login()
-			if err != nil {
-				log.Fatalf("Error occured : %s", err)
-			}
-		},
-	},
-	{
 		Use:   "add",
 		Short: "Add user, movies and etc",
 		Long: `Add anything to app database using

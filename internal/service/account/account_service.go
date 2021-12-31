@@ -28,6 +28,7 @@ func NewAccountService(client *mongo.Client) (service.IAccountService, error) {
 }
 
 func (service accountService) SignUp(user models.User) (interface{}, error) {
+
 	password := utils.HashAndSalt([]byte(user.Password))
 	user.Password = password
 	id, err := service.db.CreateUser(user)
@@ -52,5 +53,14 @@ func (service accountService) Login(email string, password string) (string, erro
 		return "", errors.New("password doesn't match")
 	}
 
-	return user.Id.String(), nil
+	return user.Id.Hex(), nil
+}
+
+func (service accountService) EmailExist(email string) bool {
+	_, err := service.db.GetUserByEmail(email)
+
+	if err == nil {
+		return true
+	}
+	return false
 }
